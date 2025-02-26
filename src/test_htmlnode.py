@@ -53,7 +53,42 @@ class TestHTMLNode(unittest.TestCase):
             "<div><span><b>grandchild</b></span></div>",
         )
 
+    def test_text(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "This is a text node")
 
+    def test_text2(self):
+        node = TextNode("This is a text node", TextType.BOLD)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "b")
+        self.assertEqual(html_node.value, "This is a text node")
+
+    def test_text3(self):
+        node = TextNode("This is a text node", TextType.ITALIC)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "i")
+        self.assertEqual(html_node.value, "This is a text node")
+
+    '''
+    def test_text4(self):
+        node = TextNode("This is a text node", "blabla")
+        html_node = text_node_to_html_node(node)
+
+    def test_text4_5(self):
+        node = TextNode("This is a text node", 4.5)
+        html_node = text_node_to_html_node(node)
+    '''
+        
+    def test_text5(self):
+        node = TextNode("This is a text node", TextType.IMAGE, "www.link.com")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "img")
+        self.assertEqual(html_node.to_html(), '<img src="www.link.com" alt="This is a text node">')
+    
+    
+#<img src="url/of/image.jpg" alt="Description of image">
 
 
 if __name__ == "__main__":
