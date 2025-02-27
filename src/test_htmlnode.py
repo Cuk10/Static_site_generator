@@ -9,7 +9,7 @@ class TestHTMLNode(unittest.TestCase):
         node1.props_to_html()
         #print(node1.props_to_html())
 
-    def test2(self):
+    def test_2(self):
         node1 = HTMLNode("p", "text", [], {"href": "https://www.google.com", "target": "_blank", })
         #print(node1)
     
