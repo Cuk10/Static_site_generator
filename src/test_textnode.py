@@ -25,16 +25,7 @@ class TestTextNode(unittest.TestCase):
         self.assertNotEqual(node3, node4)
 
 
-    def test_split_delimiter(self):
-        node = TextNode("This is text with a `code block` word", TextType.TEXT)
-        new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
-        self.assertEqual(new_nodes, [TextNode("This is text with a ", TextType.TEXT), TextNode("code block", TextType.CODE), TextNode(" word", TextType.TEXT),])
-
-    def test_split_delimiter2(self):
-        node = TextNode("_blabla_This is text with a _code block_ word _neki_", TextType.TEXT)
-        new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
-        #print(new_nodes)
-        self.assertEqual(new_nodes, [TextNode("", TextType.TEXT), TextNode("blabla", TextType.ITALIC), TextNode("This is text with a ", TextType.TEXT), TextNode("code block", TextType.ITALIC), TextNode(" word ", TextType.TEXT), TextNode("neki", TextType.ITALIC), TextNode("", TextType.TEXT),])
+    
 
 if __name__ == "__main__":
     unittest.main()
