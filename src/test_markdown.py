@@ -102,6 +102,143 @@ class TestMarkdown(unittest.TestCase):
                         )
 
 
+    def test_split_blocks(self):
+        md = """
+# This is a heading
+
+This is a paragraph of text. It has some **bold** and _italic_ words inside of it.
+
+- This is the first list item in a list block
+- This is a list item
+- This is another list item
+        """
+        blocks = markdown_to_blocks(md)
+        #print("============================================================================")
+        #print(blocks)
+        #print("============================================================================")
+        self.assertEqual(
+            blocks,
+            [
+                "# This is a heading",
+                "This is a paragraph of text. It has some **bold** and _italic_ words inside of it.",
+                """- This is the first list item in a list block
+- This is a list item
+- This is another list item"""
+            ],)
+        
+
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+    """
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+
+
+    def test_block_to_block_type1(self):
+        block = """
+### bloa bjdajjfhraufh fhukjahf z
+dhaduaud
+
+.ahkgrzj
+ajhdjk 
+*
+
+
+"""
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.HEADING
+        )
+
+    def test_block_to_block_type2(self):
+        block = """``` 
+bloa bjdajjfhraufh fhukjahf z
+dhaduaud
+
+.ahkgrzj
+ajhdjk 
+*
+
+
+```"""
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.CODE
+        )
+
+    def test_block_to_block_type3(self):
+        block = """``` bloa bjdajjfhraufh fhukjahf z
+dhaduaud
+
+.ahkgrzj
+ajhdjk 
+*
+
+
+"""
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.PARAGRAPH
+        )
+
+    def test_block_to_block_type4(self):
+        block = """>
+> bloa bjdajjfhraufh fhukjahf z
+>dhaduaud
+>
+>.ahkgrzj
+>ajhdjk 
+>*
+>
+>"""
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.QUOTE
+        )
+
+    def test_block_to_block_type5(self):
+        block = """- 
+- bloa bjdajjfhraufh fhukjahf z
+- dhaduaud
+- 
+- .ahkgrzj
+- ajhdjk 
+- *
+- 
+- """
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.UNORDERED_LIST
+        )
+
+    def test_block_to_block_type6(self):
+        block = """1. 
+2. ### bloa bjdajjfhraufh fhukjahf z
+3. dhaduaud
+4. .ahkgrzj
+5. ajhdjk 
+6. *"""
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.ORDERED_LIST
+        )
+
+
+
 
 if __name__ == "__main__":
     unittest.main()

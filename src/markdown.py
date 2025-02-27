@@ -1,4 +1,5 @@
 import re
+from enum import Enum
 from textnode import *
 
 Markdown_marks = {
@@ -7,6 +8,15 @@ Markdown_marks = {
     "_": TextType.ITALIC,
     "`": TextType.CODE,
 }
+
+
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    UNORDERED_LIST = "unordered list"
+    ORDERED_LIST = "ordered list"
 
 
 
@@ -95,3 +105,46 @@ def text_to_textnodes(text):
     nodes = split_nodes_link(nodes)
     return nodes
     
+
+def markdown_to_blocks(markdown):
+    blocks = markdown.split("\n\n")
+    final = []
+    for block in blocks:
+        block = block.strip()
+        if block != "":
+            final.append(block)
+    return final
+
+
+def block_to_block_type(block):
+    headings = ["#", "##", "###", "####", "#####", "######"]
+    if block.split()[0] in headings:
+        return BlockType.HEADING
+    if block[:3] == "```" and block[::-1][:3] == "```":
+        return BlockType.CODE
+    blocks = block.split("\n")
+    je1 = True
+    for b in blocks:
+        if b[:1] != ">":
+            je1 = False
+            break
+    if je1:
+        return BlockType.QUOTE
+    je2 = True
+    for b in blocks:
+        if b[:2] != "- ":
+            je2 = False
+            break
+    if je2:
+        return BlockType.UNORDERED_LIST
+    je3 = True
+    i = 1
+    for b in blocks:
+        word = b.split()
+        if word[0] != f"{i}." :
+            je3 = False
+            break
+        i += 1
+    if je3:
+        return BlockType.ORDERED_LIST
+    return BlockType.PARAGRAPH
