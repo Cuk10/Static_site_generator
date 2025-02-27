@@ -1,7 +1,12 @@
 import re
 from textnode import *
 
-
+Markdown_marks = {
+    "**": TextType.BOLD,
+    "*": TextType.ITALIC,
+    "_": TextType.ITALIC,
+    "`": TextType.CODE,
+}
 
 
 
@@ -10,15 +15,17 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     for node in old_nodes:
         if node.text_type == TextType.TEXT:
             if delimiter not in node.text:
-                raise Exception("That's invalid Markdown syntax")
-            new = node.text.split(delimiter)
-            i = 1
-            for n in new:
-                if i % 2 == 1:
-                    new_nodes.append(TextNode(n, TextType.TEXT))
-                else:
-                    new_nodes.append(TextNode(n, text_type))
-                i += 1
+                #raise Exception("That's invalid Markdown syntax")
+                new_nodes.append(node)
+            else:
+                new = node.text.split(delimiter)
+                i = 1
+                for n in new:
+                    if i % 2 == 1:
+                        new_nodes.append(TextNode(n, TextType.TEXT))
+                    else:
+                        new_nodes.append(TextNode(n, text_type))
+                    i += 1
         else:
             new_nodes.append(node)
     return split_nodes_delete_0(new_nodes)
@@ -76,3 +83,14 @@ def split_nodes_link(old_nodes):
                 new = new[1]
             new_nodes.append(TextNode(new, TextType.TEXT))
     return split_nodes_delete_0(new_nodes)
+
+
+
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT),]
+    for mark in Markdown_marks:
+        nodes = split_nodes_delimiter(nodes, mark, Markdown_marks[mark])
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
+    
