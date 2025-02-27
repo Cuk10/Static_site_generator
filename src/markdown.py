@@ -10,12 +10,13 @@ Markdown_marks = {
 
 
 
-def split_nodes_delimiter(old_nodes, delimiter, text_type):
+def split_nodes_delimiter(old_nodes, delimiter, text_type, user=None):
     new_nodes = []
     for node in old_nodes:
         if node.text_type == TextType.TEXT:
             if delimiter not in node.text:
-                #raise Exception("That's invalid Markdown syntax")
+                if user != 5:
+                    raise Exception("That's invalid Markdown syntax")
                 new_nodes.append(node)
             else:
                 new = node.text.split(delimiter)
@@ -89,7 +90,7 @@ def split_nodes_link(old_nodes):
 def text_to_textnodes(text):
     nodes = [TextNode(text, TextType.TEXT),]
     for mark in Markdown_marks:
-        nodes = split_nodes_delimiter(nodes, mark, Markdown_marks[mark])
+        nodes = split_nodes_delimiter(nodes, mark, Markdown_marks[mark], 5)
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
     return nodes

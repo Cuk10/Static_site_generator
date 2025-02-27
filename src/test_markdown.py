@@ -37,6 +37,16 @@ class TestMarkdown(unittest.TestCase):
         self.assertEqual(new_nodes, [TextNode("blabla", TextType.ITALIC), TextNode("This is text with a ", TextType.TEXT), TextNode("code block", TextType.ITALIC), TextNode(" word ", TextType.TEXT), TextNode("neki", TextType.ITALIC),])
 
 
+    def test_split_delimiter3_error(self):
+        node = TextNode("_blabla_This is text with a _code block_ word _neki_", TextType.TEXT)
+        with self.assertRaises(Exception) as context:
+            new_nodes = split_nodes_delimiter([node], "*", TextType.ITALIC)
+        self.assertEqual(str(context.exception), "That's invalid Markdown syntax")
+        #print(new_nodes)
+        
+
+
+
     def test_split_images(self):
         node = TextNode(
             "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
