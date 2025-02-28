@@ -1,6 +1,7 @@
 import re
 from enum import Enum
 from textnode import *
+from htmlnode import text_node_to_html_node, ParentNode
 
 Markdown_marks = {
     "**": TextType.BOLD,
@@ -148,3 +149,66 @@ def block_to_block_type(block):
     if je3:
         return BlockType.ORDERED_LIST
     return BlockType.PARAGRAPH
+
+
+def block_type_to_tag(block_type):
+    match(block_type):
+        case(BlockType.PARAGRAPH):
+            return "p"
+        case(BlockType.HEADING):
+            return "h"
+        case(BlockType.CODE):
+            return "code"
+        case(BlockType.QUOTE):
+            return "blockquote"
+        case(BlockType.UNORDERED_LIST):
+            return "ul"
+        case(BlockType.ORDERED_LIST):
+            return "ol"
+        case _:
+            raise ValueError
+
+
+def text_to_children_nodes(text):
+    new_text = " ".join(text.split("\n"))
+    text_nodes = text_to_textnodes(new_text)
+    children_html_nodes = []
+    for text_node in text_nodes:
+        children_html_nodes.append(text_node_to_html_node(text_node))
+    return children_html_nodes
+
+
+def text_to_lists(text):
+    new_texts = text.split("\n")
+    children = []
+    for t in new_texts:
+        t = " ".join(t.split()[1:])
+        children.append(ParentNode("li", text_to_children_nodes(t)))
+    return children
+
+
+def get_heading_and_tag(text):
+    num = len(text.split()[0])
+    text = " ".join(text.split()[1:])
+    return text, f"h{num}"
+
+
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    parent_nodes = []
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        tag = block_type_to_tag(block_type)
+        if tag == "code":
+            children = [text_node_to_html_node(TextNode(block.strip("`"), TextType.CODE)),]
+            tag = "pre"
+        elif tag == "ol" or tag == "ul":
+            children = text_to_lists(block)
+        elif tag == "h":
+            text, tag = get_heading_and_tag(block)
+            children = text_to_children_nodes(text)
+        else:
+            children = text_to_children_nodes(block)
+        parent_nodes.append(ParentNode(tag, children))
+    return ParentNode("div", parent_nodes)
+

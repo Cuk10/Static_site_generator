@@ -239,6 +239,74 @@ ajhdjk
 
 
 
+    def test_paragraphs(self):
+        md = """
+This is **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        
+
+        self.assertEqual(
+            html,
+            "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+        )
+
+    def test_codeblock(self):
+        md = """
+
+        
+        ```This is text that _should_ remain
+the **same** even with inline stuff
+```"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
+
+    
+    def test_md_to_html2(self):
+        md = """
+# Example Markdown File
+
+## Introduction
+
+This is an example of a Markdown file. Markdown is a lightweight markup language that you can use to add formatting elements to plaintext documents.
+
+## Features
+
+- **Easy to read and write**
+- **Supports various formatting options**
+- **Widely used for documentation and README files**
+
+## Code Example
+
+```python
+# This is a simple Python program
+print('Hello, World!')
+```
+
+## Conclusion
+
+Markdown is a simple yet powerful tool for writing formatted text. It's commonly used in GitHub, documentation, and blogging platforms.
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        #print("=====================================================")
+        #print(html)
+        #print("=====================================================")
+        self.maxDiff = None
+        self.assertEqual("<div><h1>Example Markdown File</h1><h2>Introduction</h2><p>This is an example of a Markdown file. Markdown is a lightweight markup language that you can use to add formatting elements to plaintext documents.</p><h2>Features</h2><ul><li><b>Easy to read and write</b></li><li><b>Supports various formatting options</b></li><li><b>Widely used for documentation and README files</b></li></ul><h2>Code Example</h2><pre><code>python\n# This is a simple Python program\nprint('Hello, World!')\n</code></pre><h2>Conclusion</h2><p>Markdown is a simple yet powerful tool for writing formatted text. It's commonly used in GitHub, documentation, and blogging platforms.</p></div>", html)
+
+
 
 if __name__ == "__main__":
     unittest.main()
