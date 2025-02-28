@@ -307,6 +307,26 @@ Markdown is a simple yet powerful tool for writing formatted text. It's commonly
         self.assertEqual("<div><h1>Example Markdown File</h1><h2>Introduction</h2><p>This is an example of a Markdown file. Markdown is a lightweight markup language that you can use to add formatting elements to plaintext documents.</p><h2>Features</h2><ul><li><b>Easy to read and write</b></li><li><b>Supports various formatting options</b></li><li><b>Widely used for documentation and README files</b></li></ul><h2>Code Example</h2><pre><code>python\n# This is a simple Python program\nprint('Hello, World!')\n</code></pre><h2>Conclusion</h2><p>Markdown is a simple yet powerful tool for writing formatted text. It's commonly used in GitHub, documentation, and blogging platforms.</p></div>", html)
 
 
+    def test_extract_title(self):
+        title = extract_title("# Hello")
+        self.assertEqual(title, "Hello")
+
+
+    def test_extract_title2(self):
+        title = extract_title("""
+
+# Example Markdown File
+
+## Introduction
+
+This is an example of a Markdown file. Markdown is a lightweight markup language that you can use to add formatting elements to plaintext documents.
+
+## Features
+
+- **Easy to read and write**"""
+                              )
+        self.assertEqual(title, "Example Markdown File")
+
 
 if __name__ == "__main__":
     unittest.main()

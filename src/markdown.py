@@ -193,6 +193,16 @@ def get_heading_and_tag(text):
     return text, f"h{num}"
 
 
+def remove_quot_sign(text):
+    new_texts = text.split("\n")
+    new = []
+    for t in new_texts:
+        n = t.strip(">").strip()
+        if n != "":
+            new.append(n)
+    return "\n".join(new)
+
+
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
     parent_nodes = []
@@ -207,8 +217,19 @@ def markdown_to_html_node(markdown):
         elif tag == "h":
             text, tag = get_heading_and_tag(block)
             children = text_to_children_nodes(text)
+        elif tag == "blockquote":
+            text = remove_quot_sign(block)
+            children = text_to_children_nodes(text)
         else:
             children = text_to_children_nodes(block)
         parent_nodes.append(ParentNode(tag, children))
     return ParentNode("div", parent_nodes)
 
+
+
+def extract_title(markdown):
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        if block.split()[0] == "#":
+            return block.strip("#").strip()
+    raise Exception("no title")
