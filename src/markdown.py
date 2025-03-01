@@ -198,8 +198,8 @@ def remove_quot_sign(text):
     new = []
     for t in new_texts:
         n = t.strip(">").strip()
-        if n != "":
-            new.append(n)
+        #if n != "":
+        new.append(n)
     return "\n".join(new)
 
 
